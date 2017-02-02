@@ -85,7 +85,7 @@ fi
 mkdir alfrescoinstall
 cd ./alfrescoinstall
 
-
+read -e -p "Use LXCommunity ECM when installing${ques} [y/n] " -i "$DEFAULTYESNO" uselxcommunity
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
