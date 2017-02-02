@@ -99,26 +99,8 @@ echo "Preparing for install. Updating the apt package index files..."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 sudo apt-get $APTVERBOSITY update;
 echo
+export ISON1604=y
 
-if [ "`which systemctl`" = "" ]; then
-  export ISON1604=n
-  echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-  echo "You are installing for version 14.04 (using upstart for services)."
-  echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-  read -e -p "Is this correct [y/n] " -i "$DEFAULTYESNO" useupstart
-  if [ "$useupstart" = "n" ]; then
-    export ISON1604=y
-  fi
-else 
-  export ISON1604=y
-  echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-  echo "You are installing for version 16.04 or later (using systemd for services)."
-  echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-  read -e -p "Is this correct [y/n] " -i "$DEFAULTYESNO" useupstart
-  if [ "$useupstart" = "n" ]; then
-    export ISON1604=n
-  fi
-fi
 
 if [ "`which curl`" = "" ]; then
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
