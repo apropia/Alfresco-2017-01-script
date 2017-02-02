@@ -7,3 +7,4 @@ $ wget https://raw.githubusercontent.com/apropia/Alfresco-2017-01-script/master/
 $ chmod +x alfinstall201701.sh                                            
 $ sudo ./alfinstall201701.sh                                
 
+La base de este archivo se tomo de https://github.com/loftuxab/alfresco-ubuntu-install/blob/master/alfinstall.sh 
