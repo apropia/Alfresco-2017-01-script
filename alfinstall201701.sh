@@ -363,7 +363,29 @@ echo
 
  
 echo
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Install Mysql Script?."
+echo "If you prefer some other way of install, skip this step."
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+read -e -p "Install Alfresco${ques} [y/n] " -i "$DEFAULTYESNO" installMySQL
+if [ "$installMySQL" = "y" ]; then
 
+	 sudo $ALF_HOME/scripts/mysql.sh
+fi
+
+echo
+  read -e -p "Install Mysql JDBC Connector${ques} [y/n] " -i "$DEFAULTYESNO" installmy
+  if [ "$installmy" = "y" ]; then
+    cd /tmp/alfrescoinstall
+	curl -# -L -O $JDBCMYSQLURL/$JDBCMYSQL
+	tar xf $JDBCMYSQL
+	cd "$(find . -type d -name "mysql-connector*")"
+	sudo mv mysql-connector*.jar $CATALINA_HOME/lib
+	sudo rm  $CATALINA_HOME/lib/postgres*.jar
+  fi
+
+echo
 
 # Finally, set the permissions
 sudo chown -R $ALF_USER:$ALF_GROUP $ALF_HOME
