@@ -227,71 +227,20 @@ fi
 
 echo
 
-
-echo
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echo "Install Java JDK."
-echo "This will install Oracle Java 8 version of Java. If you prefer OpenJDK"
-echo "you need to download and install that manually."
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-read -e -p "Install Oracle Java 8${ques} [y/n] " -i "$DEFAULTYESNO" installjdk
-if [ "$installjdk" = "y" ]; then
-  echoblue "Installing Oracle Java 8. Fetching packages..."
-  sudo apt-get $APTVERBOSITY install python-software-properties software-properties-common
-  sudo add-apt-repository ppa:webupd8team/java
-  sudo apt-get $APTVERBOSITY update
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-  sudo apt-get $APTVERBOSITY install oracle-java8-installer
-  sudo update-java-alternatives -s java-8-oracle
-  echo
-  echogreen "Finished installing Oracle Java 8"
-  echo
-else
-  echo "Skipping install of Oracle Java 8"
-  echored "IMPORTANT: You need to install other JDK and adjust paths for the install to be complete"
-  echo
-fi
-
-echo
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echo "Install LibreOffice."
-echo "This will download and install the latest LibreOffice from libreoffice.org"
-echo "Newer version of Libreoffice has better document filters, and produce better"
-echo "transformations. If you prefer to use Ubuntu standard packages you can skip"
-echo "this install."
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-read -e -p "Install LibreOffice${ques} [y/n] " -i "$DEFAULTYESNO" installibreoffice
-if [ "$installibreoffice" = "y" ]; then
-
-  cd /tmp/alfrescoinstall
-  curl -# -L -O $LIBREOFFICE
-  tar xf LibreOffice*.tar.gz
-  cd "$(find . -type d -name "LibreOffice*")"
-  cd DEBS
-  rm *gnome-integration*.deb &&\
-  rm *kde-integration*.deb &&\
-  rm *debian-menus*.deb &&\
-  sudo dpkg -i *.deb
   echo
   echoblue "Installing some support fonts for better transformations."
   # libxinerama1 libglu1-mesa needed to get LibreOffice 4.4 to work. Add the libraries that Alfresco mention in documentatinas required.
 
   ###1604 fonts-droid not available, use fonts-noto instead
   if [ "$ISON1604" = "y" ]; then
-    sudo apt-get $APTVERBOSITY install ttf-mscorefonts-installer fonts-noto fontconfig libcups2 libfontconfig1 libglu1-mesa libice6 libsm6 libxinerama1 libxrender1 libxt6
+    sudo apt-get $APTVERBOSITY install ttf-mscorefonts-installer fonts-noto libfontconfig fontconfig libcairo2 libcups2 libfontconfig1 libglu1-mesa libgl1-mesa-glx libice6 libsm6 libxinerama1 libxrender1 libxext6 libxt6
   else
     sudo apt-get $APTVERBOSITY install ttf-mscorefonts-installer fonts-droid fontconfig libcups2 libfontconfig1 libglu1-mesa libice6 libsm6 libxinerama1 libxrender1 libxt6
   fi
   echo
   echogreen "Finished installing LibreOffice"
   echo
-else
-  echo
-  echo "Skipping install of LibreOffice"
-  echored "If you install LibreOffice/OpenOffice separetely, remember to update alfresco-global.properties"
-  echored "Also run: sudo apt-get install ttf-mscorefonts-installer fonts-droid libxinerama1"
-  echo
-fi
+
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -352,36 +301,34 @@ if [ "$ISON1604" = "n" ]; then
   fi
 fi
 
+
+
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Install Alfresco community edition 2017-01."
+echo "This is the ECM software."
+echo "It is recommended that you install Alfresco."
+echo "If you prefer some other way of installing Alfresco, skip this step."
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+read -e -p "Install Alfresco${ques} [y/n] " -i "$DEFAULTYESNO" installAlfresco
+if [ "$installAlfresco" = "y" ]; then
+
+	sudo curl -# -o /tmp/alfrescoinstall/alfresco201701.bin $ALFRESCO201701
+	sudo chmod +x /tmp/alfrescoinstall/alfresco201701.bin
+	sudo /tmp/alfrescoinstall/alfresco201701.bin
+fi
+
+
+
 echo
 echoblue "Adding basic support files. Always installed if not present."
 echo
 # Always add the addons dir and scripts
-  sudo mkdir -p $ALF_HOME/addons/war
-  sudo mkdir -p $ALF_HOME/addons/share
-  sudo mkdir -p $ALF_HOME/addons/alfresco
-  if [ ! -f "$ALF_HOME/addons/apply.sh" ]; then
-    echo "Downloading apply.sh script..."
-    sudo curl -# -o $ALF_HOME/addons/apply.sh $BASE_DOWNLOAD/scripts/apply.sh
-    sudo chmod u+x $ALF_HOME/addons/apply.sh
-  fi
-  if [ ! -f "$ALF_HOME/addons/alfresco-mmt.jar" ]; then
-    sudo curl -# -o $ALF_HOME/addons/alfresco-mmt.jar $ALFMMTJAR
-  fi
 
-  # Add the jar modules dir
-  sudo mkdir -p $ALF_HOME/modules/platform
-  sudo mkdir -p $ALF_HOME/modules/share
+
 
   sudo mkdir -p $ALF_HOME/scripts
-  if [ ! -f "$ALF_HOME/scripts/mariadb.sh" ]; then
-    echo "Downloading mariadb.sh install and setup script..."
-    sudo curl -# -o $ALF_HOME/scripts/mariadb.sh $BASE_DOWNLOAD/scripts/mariadb.sh
-  fi
-  if [ ! -f "$ALF_HOME/scripts/postgresql.sh" ]; then
-    echo "Downloading postgresql.sh install and setup script..."
-    sudo curl -# -o $ALF_HOME/scripts/postgresql.sh $BASE_DOWNLOAD/scripts/postgresql.sh
-  fi
-
+  
   if [ ! -f "$ALF_HOME/scripts/mysql.sh" ]; then
     echo "Downloading mysql.sh install and setup script..."
     sudo curl -# -o $ALF_HOME/scripts/mysql.sh $BASE_DOWNLOAD/scripts/mysql.sh
@@ -414,39 +361,8 @@ echo
   fi
   sudo chmod 755 $ALF_HOME/scripts/*.sh
 
-  # Keystore
-  sudo mkdir -p $ALF_DATA_HOME/keystore
-  # Only check for precesence of one file, assume all the rest exists as well if so.
-  if [ ! -f " $ALF_DATA_HOME/keystore/ssl.keystore" ]; then
-    echo "Downloading keystore files..."
-    sudo curl -# -o $ALF_DATA_HOME/keystore/browser.p12 $KEYSTOREBASE/browser.p12
-    sudo curl -# -o $ALF_DATA_HOME/keystore/generate_keystores.sh $KEYSTOREBASE/generate_keystores.sh
-    sudo curl -# -o $ALF_DATA_HOME/keystore/keystore $KEYSTOREBASE/keystore
-    sudo curl -# -o $ALF_DATA_HOME/keystore/keystore-passwords.properties $KEYSTOREBASE/keystore-passwords.properties
-    sudo curl -# -o $ALF_DATA_HOME/keystore/ssl-keystore-passwords.properties $KEYSTOREBASE/ssl-keystore-passwords.properties
-    sudo curl -# -o $ALF_DATA_HOME/keystore/ssl-truststore-passwords.properties $KEYSTOREBASE/ssl-truststore-passwords.properties
-    sudo curl -# -o $ALF_DATA_HOME/keystore/ssl.keystore $KEYSTOREBASE/ssl.keystore
-    sudo curl -# -o $ALF_DATA_HOME/keystore/ssl.truststore $KEYSTOREBASE/ssl.truststore
-  fi
-
+ 
 echo
-
-
-echo
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echo "Install Alfresco community edition 2017-01."
-echo "This is the ECM software."
-echo "It is recommended that you install Alfresco."
-echo "If you prefer some other way of installing Alfresco, skip this step."
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-read -e -p "Install Alfresco${ques} [y/n] " -i "$DEFAULTYESNO" installAlfresco
-if [ "$installAlfresco" = "y" ]; then
-
-	sudo curl -# -o /tmp/alfrescoinstall/alfresco201701.bin $ALFRESCO201701
-	sudo chmod +x /tmp/alfrescoinstall/alfresco201701.bin
-	sudo /tmp/alfrescoinstall/alfresco201701.bin
-fi
-
 
 
 # Finally, set the permissions
