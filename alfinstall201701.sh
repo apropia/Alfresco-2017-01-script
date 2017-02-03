@@ -69,6 +69,14 @@ pass=${bldblu}*${txtrst}
 warn=${bldred}*${txtrst}
 ques=${bldblu}?${txtrst}
 
+read -e -p "Press any key to continue 1 ${ques} [y/n] " -i "$DEFAULTYESNO" uselxcommunity
+
+echo
+echo
+echo 
+
+read -e -p "Press any key to continue 2 ${ques} [y/n] " -i "$DEFAULTYESNO" uselxcommunity
+
 echoblue () {
   echo "${bldblu}$1${txtrst}"
 }
@@ -92,7 +100,7 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 echo "Checking for the availability of the URLs inside script..."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
-read -e -p "Use LXCommunity ECM when installing${ques} [y/n] " -i "$DEFAULTYESNO" uselxcommunity
+
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo "Preparing for install. Updating the apt package index files..."
