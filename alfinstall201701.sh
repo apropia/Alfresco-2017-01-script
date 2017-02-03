@@ -20,7 +20,7 @@ export LOCALESUPPORT=en_US.utf8
 export TOMCAT_DOWNLOAD=http://archive.apache.org/dist/tomcat/tomcat-8/v8.0.39/bin/apache-tomcat-8.0.39.tar.gz
 export JDBCPOSTGRESURL=https://jdbc.postgresql.org/download
 export JDBCPOSTGRES=postgresql-9.4.1211.jar
-export JDBCMYSQLURL=https://dev.mysql.com/get/Downloads/Connector-J
+export JDBCMYSQLURL=https://cdn.mysql.com//Downloads/Connector-J
 export JDBCMYSQL=mysql-connector-java-5.1.40.tar.gz
 
 export ALFRESCO201701=http://eu.dl.alfresco.com.s3.amazonaws.com/release/community/201701-build-00015/alfresco-community-installer-201701-linux-x64.bin
@@ -368,7 +368,7 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 echo "Install Mysql Script?."
 echo "If you prefer some other way of install, skip this step."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-read -e -p "Install Alfresco${ques} [y/n] " -i "$DEFAULTYESNO" installMySQL
+read -e -p "Install MySQL${ques} [y/n] " -i "$DEFAULTYESNO" installMySQL
 if [ "$installMySQL" = "y" ]; then
 
 	 sudo $ALF_HOME/scripts/mysql.sh
@@ -425,7 +425,7 @@ echo "6. Start nginx if you have installed it: sudo service nginx start"
 echo
 echo "7. Start Alfresco/tomcat:"
 if [ "$ISON1604" = "y" ]; then
-echo "   sudo $ALF_HOME/alfresco-service.sh start"
+echo "   sudo $ALF_HOME/alfresco.sh start"
 else
 echo "   sudo service alfresco start"
 fi
